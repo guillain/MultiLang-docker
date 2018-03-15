@@ -7,7 +7,7 @@ RUN apk add -U ca-certificates \
 ADD ./app /app
 WORKDIR /app
 
-COPY ./package*.json ./
+COPY ./app/package*.json ./
 RUN npm install
 COPY ./app .
 

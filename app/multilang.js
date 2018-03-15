@@ -70,8 +70,8 @@ flint.on('message', function(bot, trigger, id) {
 app.post('/flint', webhook(flint) );
 
 // Help fct
-flint.hears(/^help.*/i, function(bot, trigger) {
-  bot.say(help());
+flint.hears(/help.*/i, function(bot, trigger) {
+  bot.say( '' + help());
 });
 
 // Test
@@ -96,7 +96,7 @@ flint.hears(/.*/i, function(bot, trigger) {
       target: langOut
     }, function(result) {
       console.log('langOut:' + langOut + ', phraseOut:' + result);
-      bot.say(result);
+      bot.say('' + result);
     });
 
 });

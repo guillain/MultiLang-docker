@@ -1,5 +1,5 @@
 {
-  "name": "sparkbotadv",
+  "name": "multilang",
   "version": "1.0.3",
   "description": "Spark features provided by bot",
   "main": "app.js",
@@ -10,7 +10,6 @@
     "node-sparky": "^4",
     "express": "^4",
     "node-google-translate-skidz": "^1",
-    "reds": "^0.2.5",
     "fs": "^0",
     "config": "^1",
     "logstash-client": "^1.1.1"
