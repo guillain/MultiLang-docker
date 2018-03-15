@@ -1,0 +1,27 @@
+{
+  "name": "sparkbotadv",
+  "version": "1.0.3",
+  "description": "Spark features provided by bot",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1",
+    "lodash": "^4",
+    "node-flint": "^4",
+    "node-sparky": "^4",
+    "express": "^4",
+    "node-google-translate-skidz": "^1",
+    "reds": "^0.2.5",
+    "fs": "^0",
+    "config": "^1",
+    "logstash-client": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "guillain",
+  "license": "ISC",
+  "keywords": [
+    "sparkbot"
+  ]
+}
