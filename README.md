@@ -63,5 +63,7 @@ config.js
 ## Docker
 Provided also for Docker env. with the Dockerfile for the standalone builder
 
-## ToDo
-[todo.md](todo.md)
+
+## Current issue
+* flint Redis storage (issue: https://github.com/flint-bot/flint/issues/22). Thanks to use the old redis.js file.
+
