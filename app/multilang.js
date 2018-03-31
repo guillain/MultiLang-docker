@@ -104,9 +104,9 @@ flint.hears(/.*/i, function(bot, trigger, id) {
   if (trigger.args['0'] === config.name) { trigger.args.splice(0,1); }  
 
   // Storage: get, check & default
-  var data = bot.recall('translatedb');
+  var data = bot.recall(config.userDB);
   console.log('id:' + id + ', data: ' + JSON.stringify(data, null, 4) + ', args:' + trigger.args);
-  if(!data)          { data = bot.store('translatedb', {}); }
+  if(!data)          { data = bot.store(config.userDB, {}); }
   if(!data.state)    { data.state = false; }
   if(!data.langin)   { data.langin = 'fr'; }
   if(!data.langout)  { data.langout = 'en'; }

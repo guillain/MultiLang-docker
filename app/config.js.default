@@ -12,6 +12,7 @@ config.debug = '1';
 // Flint
 config.address = '0.0.0.0';
 config.port = '8080';
+config.userDB = 'translate';
 
 // Spark
 config.sparkbot = 'TranslatorBot@sparkbot.io';
