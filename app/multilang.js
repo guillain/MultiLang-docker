@@ -54,6 +54,7 @@ help = function() {
   help += '* ar - Arabic \n\n';
   help += '* zh-CN - Chinese (Simplified) \n\n';
   help += '* zh-TW - Chinese (Traditional) \n\n';
+  help += 'Full list: https://cloud.google.com/translate/docs/languages\n\n';
   return(help);
 }
 
@@ -91,11 +92,6 @@ flint.on('message', function(bot, trigger, id) {
   }
 });
 
-// say hello
-flint.hears('/hello', function(bot, trigger) {
-  bot.say('Hello %s and Welcome on MultiLang - A translation tool!', trigger.personDisplayName);
-});
-
 // Define express path for incoming webhooks
 app.post('/flint', webhook(flint) );
 
@@ -103,49 +99,51 @@ app.post('/flint', webhook(flint) );
 flint.hears(/.*/i, function(bot, trigger, id) {
   var phrase = '';
   var tosay = '';
-  console.log('id:'+id+',args:'+trigger.args);
 
+  // Remove hostname from argument list if found on the first argument
   if (trigger.args['0'] === config.name) { trigger.args.splice(0,1); }  
 
-  // Storage checking
-  var id_data = bot.recall(id);
-  if(!id_data)          { id_data = bot.store(id_data, {}); }
-  if(!id_data.state)    { id_data.state = false; }
-  if(!id_data.langin)   { id_data.langin = 'fr'; }
-  if(!id_data.langout)  { id_data.langout = 'en'; }
+  // Storage: get, check & default
+  var data = bot.recall('translatedb');
+  console.log('id:' + id + ', data: ' + JSON.stringify(data, null, 4) + ', args:' + trigger.args);
+  if(!data)          { data = bot.store('translatedb', {}); }
+  if(!data.state)    { data.state = false; }
+  if(!data.langin)   { data.langin = 'fr'; }
+  if(!data.langout)  { data.langout = 'en'; }
 
   // Check first parameter as function
-  if      (/^help$/i.test(trigger.args['0']))   { bot.say('' + help()); }
-  else if (/^test$/i.test(trigger.args['0']))   { bot.say('test ok'); }
-  else if (/^state$/i.test(trigger.args['0']))  { bot.say('State: ' + id_data.state); }
-  else if (/^config$/i.test(trigger.args['0'])) { bot.say('Config:\n* In: ' + id_data.langin + '\n* Out: ' + id_data.langout); }
-  else if (/^off$/i.test(trigger.args['0']))    { bot.say('Auto translation **OFF**'); id_data.state = false; }
-  else if (/^on$/i.test(trigger.args['0']))     { bot.say('Auto translation **ON**'); id_data.state = true; }
-  else if ((trigger.args['0'] == 'config') && (trigger.args.length == 3)) { 
+  if      ((/^help$/i.test(trigger.args['0']))   && (trigger.args.length == 1)) { bot.say('' + help()); }
+  else if ((/^test$/i.test(trigger.args['0']))   && (trigger.args.length == 1)) { bot.say('test ok'); }
+  else if ((/^state$/i.test(trigger.args['0']))  && (trigger.args.length == 1)) { bot.say('State: ' + data.state); }
+  else if ((/^off$/i.test(trigger.args['0']))    && (trigger.args.length == 1)) { bot.say('Auto translation **OFF**'); data.state = false; }
+  else if ((/^on$/i.test(trigger.args['0']))     && (trigger.args.length == 1)) { bot.say('Auto translation **ON**'); data.state = true; }
+  else if ((/^config$/i.test(trigger.args['0'])) && (trigger.args.length == 1)) { bot.say('Config:\n* In: ' + data.langin + '\n* Out: ' + data.langout); }
+  else if ((/^config$/i.test(trigger.args['0'])) && (trigger.args.length == 3)) { 
       // todo: check if 1 & 2 exist and in the dict
-      id_data.langin = trigger.args['1'];
-      id_data.langout = trigger.args['2'];
-      bot.say('Configuration saved ('+trigger.args['1']+','+trigger.args['2']+')');
+      data.langin = trigger.args['1'];
+      data.langout = trigger.args['2'];
+      bot.say('Configuration saved _(' + data.langin + ',' + data.langout + ')_');
   }
   else {
-      if (! id_data.state){
+      var index_to_start = 0;
+      if (!data.state){
         // todo: check if 0 & 1 exist and in the dict
-        id_data.langin = trigger.args['0'];
-        id_data.langout = trigger.args['1'];
+        data.langin = trigger.args['0'];
+        data.langout = trigger.args['1'];
+        index_to_start = 2;
       }
-      for (i = 2; i < trigger.args.length; i++) { phrase += ' '+trigger.args[i]; }
-      console.log('langIn:' + id_data.langin + ', phraseIn:' + phrase);
+      for (i = index_to_start; i < trigger.args.length; i++) { phrase += ' '+trigger.args[i]; }
+      console.log('langIn:' + data.langin + ', phraseIn:' + phrase);
 
       translate({
         text: phrase,
-        source: id_data.langin,
-        target: id_data.langout
+        source: data.langin,
+        target: data.langout
       }, function(result) {
-        console.log('langOut:' + id_data.langout + ', phraseOut:' + result);
-        bot.say('_('+id_data.langin+' to '+id_data.langout+')_ ' + result);
+        console.log('langOut:' + data.langout + ', phraseOut:' + result);
+        bot.say('_('+data.langin+' to '+data.langout+')_ ' + result);
       });
   }
-  bot.store(id,id_data);
 });
 
 // Start expess server
